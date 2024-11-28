@@ -1,0 +1,37 @@
+﻿<UserControl
+    x:Class="Lab2.Views.PointEntry"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:helix="http://helix-toolkit.org/wpf"
+    xmlns:local="clr-namespace:Lab2.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:numericInput="http://gu.se/NumericInput"
+    xmlns:viewmodels="clr-namespace:Lab2.ViewModels;assembly=Lab2.ViewModels"
+    d:Background="White"
+    d:DesignHeight="100"
+    d:DesignWidth="100"
+    mc:Ignorable="d">
+    <UserControl.DataContext>
+        <viewmodels:ProjectionPointViewModel x:Name="pointViewModel" />
+    </UserControl.DataContext>
+    <StackPanel>
+        <Label Content="Точка" />
+        <StackPanel Orientation="Horizontal">
+            <Label Content="u" Target="{Binding ElementName=uInput}" />
+            <numericInput:FloatBox
+                Name="uInput"
+                Width="50"
+                Value="{Binding U}" />
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal">
+            <Label Content="v" Target="{Binding ElementName=vInput}" />
+
+            <numericInput:FloatBox
+                Name="vInput"
+                Width="50"
+                Value="{Binding V}" />
+        </StackPanel>
+    </StackPanel>
+</UserControl>

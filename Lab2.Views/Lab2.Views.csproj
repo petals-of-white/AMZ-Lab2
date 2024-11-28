@@ -7,4 +7,14 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Ab3d.PowerToys" Version="11.1.8864" />
+    <PackageReference Include="Gu.Wpf.NumericInput" Version="0.5.5" />
+    <PackageReference Include="HelixToolkit.Core.Wpf" Version="2.25.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Lab2.ViewModels\Lab2.ViewModels.csproj" />
+  </ItemGroup>
+
 </Project>
