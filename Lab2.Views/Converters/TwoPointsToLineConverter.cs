@@ -8,7 +8,7 @@ public class TwoPointsToLineConverter : IMultiValueConverter
 {
     public object Convert(object [] values, Type targetType, object parameter, CultureInfo culture)
     {
-        Point3DCollection points = [(Point3D) values [0], (Point3D) values [1]];
+        Point3DCollection points = new(values.Select(obj => (Point3D) obj));
 
         return points;
     }
