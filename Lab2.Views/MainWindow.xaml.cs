@@ -14,8 +14,7 @@ public partial class MainWindow : Window
         firstPointEntry.PointViewModel = mainViewModel.Point1VM;
         
         secondPointEntry.PointViewModel = mainViewModel.Point2VM;
-        //mainViewModel.Point1VM = firstPointEntry.PointViewModel;
-        //mainViewModel.Point2VM = secondPointEntry.PointViewModel;
+        
     }
 
     private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
