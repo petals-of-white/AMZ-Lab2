@@ -9,7 +9,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Lab2.Core\Lab2.Core.fsproj" />
     <ProjectReference Include="..\Lab2.Views\Lab2.Views.csproj" />
   </ItemGroup>
 

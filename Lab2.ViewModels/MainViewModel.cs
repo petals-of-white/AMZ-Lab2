@@ -1,6 +1,6 @@
 ﻿using System.Numerics;
 using System.Windows.Media.Media3D;
-using Lab2.Core;
+using Lab2.CoreNe;
 
 namespace Lab2.ViewModels;
 
@@ -19,7 +19,7 @@ public class MainViewModel : SimpleNotifier
         get => variantData.CameraDistance;
         set
         {
-            variantData = new VariantData(value, variantData.FocusLength, variantData.SecondCameraPos);
+            variantData = new VariantData(value, variantData.FocusLength, variantData.SecondCameraAxis);
             NotifyPropertyChanged(nameof(CameraDistance));
             NotifyPropertyChanged(nameof(ResultPoint));
             NotifyPropertyChanged(nameof(FocusPlanePos));
@@ -30,14 +30,14 @@ public class MainViewModel : SimpleNotifier
 
     public string DistanceAxis
     {
-        get => variantData.SecondCameraPos.ToString(); set
+        get => variantData.SecondCameraAxis.ToString(); set
         {
             Axis newAxis = char.ToUpper(value.First()) switch
             {
                 'X' => Axis.X,
                 'Y' => Axis.Y,
                 'Z' => Axis.Z,
-                _ => variantData.SecondCameraPos
+                _ => variantData.SecondCameraAxis
             };
 
             variantData = new VariantData(variantData.CameraDistance, variantData.FocusLength, newAxis);
@@ -51,13 +51,13 @@ public class MainViewModel : SimpleNotifier
         }
     }
 
-    public Point3D FirstCameraPosition => Coordinates.firstCameraPos(variantData).ToPoint3D();
+    public Point3D FirstCameraPosition => variantData.FirstCamera.ToPoint3D();
 
     public int FocusLength
     {
         get => variantData.FocusLength; set
         {
-            variantData = new VariantData(variantData.CameraDistance, value, variantData.SecondCameraPos);
+            variantData = new VariantData(variantData.CameraDistance, value, variantData.SecondCameraAxis);
             NotifyPropertyChanged(nameof(FocusLength));
             NotifyPropertyChanged(nameof(ResultPoint));
             NotifyPropertyChanged(nameof(FocusPlanePos));
@@ -66,46 +66,35 @@ public class MainViewModel : SimpleNotifier
         }
     }
 
-    public Vector3D FocusPlaneNormal => variantData.SecondCameraPos switch
+    public Vector3D FocusPlaneNormal => variantData.SecondCameraAxis switch
     {
-        var axis when axis.IsX || axis.IsY => new(0, 0, 1),
-        var axis when axis.IsZ => new(1, 0, 0),
+        Axis.X or Axis.Y => new(0, 0, 1),
+        Axis.Z => new(1, 0, 0),
         _ => throw new ArgumentException("Unexpected axis")
     };
 
-    public Point3D FocusPlanePos => (variantData.SecondCameraPos switch
+    public Point3D FocusPlanePos => (variantData.SecondCameraAxis switch
     {
-        var axis when axis.IsX || axis.IsY =>
-            (Coordinates.firstCameraPos(variantData) + Coordinates.secondCameraPos(variantData)) / 2 + new Vector3(0, 0, variantData.FocusLength * 100),
-
-        var axis when axis.IsZ =>
-            (Coordinates.firstCameraPos(variantData) + Coordinates.secondCameraPos(variantData)) / 2 + new Vector3(variantData.FocusLength * 100, 0, 0),
-
+        Axis.X or Axis.Y => (variantData.FirstCamera + variantData.SecondCamera) / 2 + new Vector3(0, 0, variantData.FocusLength * 100),
+        Axis.Z => (variantData.FirstCamera + variantData.SecondCamera) / 2 + new Vector3(variantData.FocusLength * 100, 0, 0),
         _ => throw new ArgumentException("Unexpected axis")
     }).ToPoint3D();
 
-    public Point3D Point1AbsPos => Coordinates.firstPointAbsPos(variantData, Point1VM.Point).ToPoint3D();
+    public Point3D Point1AbsPos => variantData.FirstPointAbsolutePos(Point1VM.Point).ToPoint3D();
     public ProjectionPointViewModel Point1VM { get; set; } = new(new Vector2(22, 22));
-    public Point3D Point2AbsPos => Coordinates.secondPointAbsPos(variantData, Point2VM.Point).ToPoint3D();
+    public Point3D Point2AbsPos => variantData.SecondPointAbsolutePos(Point2VM.Point).ToPoint3D();
     public ProjectionPointViewModel Point2VM { get; set; } = new(new Vector2(-22, 22));
 
     public Point3D ResultPoint
     {
         get
         {
-            var res = Coordinates.calculateKeyPoint(variantData, Point1VM.Point, Point2VM.Point);
+            var res = variantData.CalculateKeyPoint(Point1VM.Point, Point2VM.Point);
             return res.ToPoint3D();
         }
     }
 
-    public Point3D SecondCameraPosition => Coordinates.secondCameraPos(variantData).ToPoint3D();
-    //public Point3D SecondCameraPosition =>  variantData switch
-    //{
-    //    { CameraDistance: var d, SecondCameraPos: var axis } when axis.IsX => new Point3D(d, 0, 0),
-    //    { CameraDistance: var d, SecondCameraPos: var axis } when axis.IsY => new Point3D(0, d, 0),
-    //    { CameraDistance: var d, SecondCameraPos: var axis } when axis.IsZ => new Point3D(0, 0, d),
-    //    _ => throw new ArgumentException("Uknown axis")
-    //};
+    public Point3D SecondCameraPosition => variantData.SecondCamera.ToPoint3D();
 
     private void PointsVM_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
