@@ -85,9 +85,9 @@ public class MainViewModel : SimpleNotifier
     }).ToPoint3D();
 
     public Point3D Point1AbsPos => Coordinates.firstPointAbsPos(variantData, Point1VM.Point).ToPoint3D();
-    public ProjectionPointViewModel Point1VM { get; set; } = new(new Vector2(40, 40));
+    public ProjectionPointViewModel Point1VM { get; set; } = new(new Vector2(22, 22));
     public Point3D Point2AbsPos => Coordinates.secondPointAbsPos(variantData, Point2VM.Point).ToPoint3D();
-    public ProjectionPointViewModel Point2VM { get; set; } = new(new Vector2(-40, 40));
+    public ProjectionPointViewModel Point2VM { get; set; } = new(new Vector2(-22, 22));
 
     public Point3D ResultPoint
     {
