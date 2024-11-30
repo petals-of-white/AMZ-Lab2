@@ -7,9 +7,9 @@
     xmlns:helix="http://helix-toolkit.org/wpf"
     xmlns:local="clr-namespace:Lab2.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:numericInput="http://gu.se/NumericInput"
     xmlns:viewmodels="clr-namespace:Lab2.ViewModels;assembly=Lab2.ViewModels"
     Title="Лабораторна 2"
-    xmlns:numericInput="http://gu.se/NumericInput"
     Width="700"
     Height="512"
     mc:Ignorable="d">
@@ -19,25 +19,11 @@
     <Window.DataContext>
         <viewmodels:MainViewModel x:Name="mainViewModel" />
     </Window.DataContext>
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="512" />
-            <ColumnDefinition />
-        </Grid.ColumnDefinitions>
-
+    <StackPanel Orientation="Horizontal">
         <helix:HelixViewport3D
             x:Name="viewport3D"
-            Grid.Row="0"
-            Grid.RowSpan="5"
-            Grid.Column="0"
-
+            Width="512"
+            CameraRotationMode="Turnball"
             ShowCoordinateSystem="True">
             <helix:HelixViewport3D.Camera>
                 <PerspectiveCamera
@@ -48,7 +34,6 @@
                     Position="100,100,100" />
             </helix:HelixViewport3D.Camera>
             <helix:SunLight />
-            <!--<helix:DefaultLights   />-->
 
             <helix:ArrowVisual3D
                 Diameter="1"
@@ -69,18 +54,25 @@
                 Center="{Binding Path=FirstCameraPosition}"
                 Fill="Purple"
                 Radius="2" />
-            <helix:SphereVisual3D Center="{Binding Point1AbsPos}" Radius="2"  Fill="Purple" />
+            <helix:SphereVisual3D
+                Center="{Binding Point1AbsPos}"
+                Fill="Purple"
+                Radius="2" />
 
             <helix:SphereVisual3D
                 Center="{Binding Path=SecondCameraPosition}"
                 Fill="Orange"
                 Radius="2" />
-            <helix:SphereVisual3D Center="{Binding Point2AbsPos}" Radius="2" Fill="Orange" />
+            <helix:SphereVisual3D
+                Center="{Binding Point2AbsPos}"
+                Fill="Orange"
+                Radius="2" />
 
             <helix:SphereVisual3D
                 d:Center="3,3,3"
                 Center="{Binding ResultPoint}"
-                Fill="Red" Radius="2" />
+                Fill="Red"
+                Radius="2" />
 
             <helix:LinesVisual3D
                 x:Name="cam1ToResLine"
@@ -89,8 +81,8 @@
                 <helix:LinesVisual3D.Points>
                     <MultiBinding Converter="{StaticResource ResourceKey=pointsToLineConverter}">
                         <Binding Path="FirstCameraPosition" />
-                        <Binding Path="Point1AbsPos"/>
-                        <Binding Path="Point1AbsPos"/>
+                        <Binding Path="Point1AbsPos" />
+                        <Binding Path="Point1AbsPos" />
                         <Binding Path="ResultPoint" />
                     </MultiBinding>
                 </helix:LinesVisual3D.Points>
@@ -112,41 +104,51 @@
             <helix:GridLinesVisual3D
                 x:Name="focusPlaneGrid"
                 Width="200"
-                Length="200"
-
-                Fill="Purple"
                 Center="{Binding FocusPlanePos}"
+                Fill="Purple"
+                Length="200"
                 Normal="{Binding FocusPlaneNormal}" />
         </helix:HelixViewport3D>
 
-        <local:PointEntry
-            x:Name="firstPointEntry"
-            Grid.Row="0"
-            Grid.Column="1"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center" />
-        <local:PointEntry
-            x:Name="secondPointEntry"
-            Grid.Row="1"
-            Grid.Column="1"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center" />
-        <ListBox
-            Grid.Row="2"
-            Grid.Column="1"
-            SelectionChanged="ListBox_SelectionChanged"
-            SelectionMode="Single">
-            <ListBoxItem Content="X" />
-            <ListBoxItem Content="Y" />
-            <ListBoxItem Content="Z" />
-        </ListBox>
-        <StackPanel Grid.Row="3" Grid.Column="1" HorizontalAlignment="Center">
-            <Label>Відстань між камерами (см)</Label>
-            <numericInput:FloatBox x:Name="distanceInput"  Value="{Binding CameraDistance}" />
-        </StackPanel>
-        <StackPanel Grid.Row="4" Grid.Column="1" HorizontalAlignment="Center">
-            <Label>Фокусна відстань (м)</Label>
-            <numericInput:FloatBox x:Name="focusLength" Value="{Binding FocusLength}" />
-        </StackPanel>
-    </Grid>
+        <Grid Width="150">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <local:PointEntry
+                x:Name="firstPointEntry"
+                Grid.Row=" 0"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center" />
+
+            <local:PointEntry
+                x:Name="secondPointEntry"
+                Grid.Row="1"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center" />
+
+            <ListBox
+                Grid.Row="2"
+                SelectionChanged="ListBox_SelectionChanged"
+                SelectionMode="Single">
+                <ListBoxItem Content="X" />
+                <ListBoxItem Content="Y" />
+                <ListBoxItem Content="Z" />
+            </ListBox>
+            <StackPanel Grid.Row="3" HorizontalAlignment="Center">
+                <Label>Відстань між камерами (см)</Label>
+                <numericInput:FloatBox x:Name="distanceInput" Value="{Binding CameraDistance}" />
+            </StackPanel>
+            <StackPanel Grid.Row="4" HorizontalAlignment="Center">
+                <Label>Фокусна відстань (м)</Label>
+                <numericInput:FloatBox x:Name="focusLength" Value="{Binding FocusLength}" />
+            </StackPanel>
+
+            <TextBlock Grid.Row="5" Text="{Binding ResultPoint, StringFormat='Точка m = ({0})'}" />
+        </Grid>
+    </StackPanel>
 </Window>
